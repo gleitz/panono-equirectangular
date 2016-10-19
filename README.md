@@ -1,4 +1,4 @@
-Bubbli to Equirectangular Converter
+Panono to Equirectangular Converter
 ========================
 
 Convert [https://panono.com](Panono) spheres to equirectanglar images.
