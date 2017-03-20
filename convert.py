@@ -14,8 +14,10 @@ def download(panono_id):
     filename = '{}.jpg'.format(panono_id)
     os.system('wget https://tiles.panono.com/5/' + image_id + '/equirectangular_8192.jpg -O ' + filename)
 
+
 def convert(panono_id):
     directions = ['0', '1', '5', '4', '3', '2']
+    quadrants = ['0_0', '1_0', '0_1', '1_1']
     filenames = []
 
     api_url = 'https://api3-dev.panono.com/panorama/{}'.format(panono_id)
@@ -24,9 +26,16 @@ def convert(panono_id):
     image_id = re.match(r"https://tiles.panono.com/5/(\w+)/", base_url).group(1)
 
     for direction in directions:
+        quadrant_filenames = []
+        for quadrant in quadrants:
+            quadrant_filename = 'tile_{}_1_{}.jpg'.format(direction, quadrant)
+            quadrant_filenames.append(quadrant_filename)
+            os.system('wget https://tiles.panono.com/5/' + image_id + '/' + quadrant_filename + ' -O ' + quadrant_filename)
         filename = 'tile_{}_0_0_0.jpg'.format(direction)
         filenames.append(filename)
-        os.system('wget https://tiles.panono.com/5/' + image_id + '/' + filename + ' -O ' + filename)
+        os.system('montage ' + ' '.join(quadrant_filenames) + ' -geometry +0 ' + filename)
+        for quadrant_filename in quadrant_filenames:
+            os.system('trash ' + quadrant_filename)
 
     png_filenames = [f.replace('jpg', 'png') for f in filenames]
 
@@ -43,11 +52,14 @@ def convert(panono_id):
     os.system('convert out0001.png -flop {}.png'.format(panono_id))
     os.system('trash out0001.png')
     os.system('trash tile*.png')
+    os.system('convert ' + panono_id + '.png ' + panono_id + '.jpg')
+    os.system('trash ' + panono_id + '.png')
+    os.system('mv ' + panono_id + '.jpg panonos/')
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print 'usage: python convert.py panono_url1 [panono_url2 panono_url3...]'
     for panono_url in sys.argv[1:]:
-        panono_id = re.match(r"https://www.panono.com/p/(\w+)", panono_url).group(1)
-        download(panono_id)
+        panono_id = re.match(r".*panono.com/p/(\w+)", panono_url).group(1)
+        convert(panono_id)
