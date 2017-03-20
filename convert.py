@@ -46,7 +46,7 @@ def convert(panono_id):
     filename = png_filenames[4]
     os.system('convert ' + filename + ' -rotate 90 ' + filename)
 
-    command = 'cube2sphere --format=png --blender-path=/Applications/blender.app/Contents/MacOS/blender ' + ' '.join(png_filenames)
+    command = 'cube2sphere -r 4096 2048 --format=png --blender-path=/Applications/blender.app/Contents/MacOS/blender ' + ' '.join(png_filenames)
     os.system(command)
 
     os.system('convert out0001.png -flop {}.png'.format(panono_id))
