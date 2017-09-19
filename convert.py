@@ -19,11 +19,15 @@ def convert(panono_id):
     directions = ['0', '1', '5', '4', '3', '2']
     quadrants = ['0_0', '1_0', '0_1', '1_1']
     filenames = []
+    directory = 'panonos'
 
     api_url = 'https://api3-dev.panono.com/panorama/{}'.format(panono_id)
     api_json = requests.get(api_url).json()
     base_url = api_json['data']['images']['cubemaps'][0]['base_url']
     image_id = re.match(r"https://tiles.panono.com/5/(\w+)/", base_url).group(1)
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
     for direction in directions:
         quadrant_filenames = []
@@ -54,12 +58,12 @@ def convert(panono_id):
     os.system('trash tile*.png')
     os.system('convert ' + panono_id + '.png ' + panono_id + '.jpg')
     os.system('trash ' + panono_id + '.png')
-    os.system('mv ' + panono_id + '.jpg panonos/')
+    os.system('mv ' + panono_id + '.jpg ' + directory + '/')
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print 'usage: python convert.py panono_url1 [panono_url2 panono_url3...]'
     for panono_url in sys.argv[1:]:
-        panono_id = re.match(r".*panono.com/p/(\w+)", panono_url).group(1)
+        panono_id = re.match(r".*cloud.panono.com/p/(\w+)", panono_url).group(1)
         convert(panono_id)
