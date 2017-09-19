@@ -9,7 +9,7 @@ Usage
 *  Install [Blender 2.76](https://www.blender.org/features/past-releases/2-76/)
 *  `pip install cube2sphere requests`
 *  `brew install imagemagick trash wget`
-*  `python convert.py bubbli_url1 [bubbli_url2 bubbli_url3...]`
+*  `python convert.py panono_url1 [panono_url2 panono_url3...]`
 
 
 Author
